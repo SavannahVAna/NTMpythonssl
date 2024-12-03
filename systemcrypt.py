@@ -2,6 +2,7 @@
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES
 import os
+from Crypto.Util.Padding import unpad
 from Crypto.Protocol.KDF import scrypt
 from Crypto.Hash import SHA256, HMAC
 from Crypto.Util.Padding import pad
@@ -38,7 +39,7 @@ def protect_file(oasswird,infile,outfile):
     with open(outfile, "wb") as f:
         f.write(ci)
     
-protect_file(password, "message.txt", "crype")
+protect_file(password, "message.txt", "cryped")
 
 def unprotect_file(filecry, passwd, fileout):
     #check integrity
@@ -60,14 +61,17 @@ def unprotect_file(filecry, passwd, fileout):
         key2 = h2.digest()
         hymac = HMAC.new(key2, digestmod=SHA256)
         hymac.update(iv + salt + rest)
-        if hymac.digest == check:
+        if hymac.digest() == check:
             print("intégrité verifié")
         else:
             print("integrité non verifiée, aborting")
             exit(1)
         cy = AES.new(key1, AES.MODE_CBC, iv = iv)
-    
+        plain = cy.decrypt(rest)
+        plain = unpad(plain, 16)
+        with open (fileout, "wb")as f:
+            f.write(plain)
 
-        
+unprotect_file("cryped", password, "messd.txt")
 
 
