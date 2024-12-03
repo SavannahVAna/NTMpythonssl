@@ -65,6 +65,7 @@ def unprotect_file(filecry, passwd, fileout):
         else:
             print("integrité non verifiée, aborting")
             exit(1)
+        cy = AES.new(key1, AES.MODE_CBC, iv = iv)
     
 
         
