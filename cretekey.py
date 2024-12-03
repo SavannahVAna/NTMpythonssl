@@ -1,7 +1,7 @@
 
 from Crypto.PublicKey import RSA
 
-mykey = RSA.generate(3072)
+mykey = RSA.generate(2048)
 
 
 pwd = b'secret'
